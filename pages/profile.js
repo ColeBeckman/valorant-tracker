@@ -1,7 +1,7 @@
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
+import { NavBar } from "@/components/NavBar";
 
 export default function Profile() {
   const [isLoading, setIsLoading] = useState(true);
@@ -52,20 +52,7 @@ export default function Profile() {
   return (
     <div className="flex flex-col min-h-screen bg-gray-100 dark:bg-gray-900">
       <header className="px-6 py-4 bg-white shadow-md dark:bg-gray-800">
-        <div className="flex items-center justify-between">
-          <Link
-            className="text-2xl font-bold text-gray-800 dark:text-white"
-            href="#"
-          ></Link>
-          <nav className="space-x-4">
-            <Link className="text-gray-800 dark:text-white" href="/">
-              Home
-            </Link>
-            <Link className="text-gray-800 dark:text-white" href="#">
-              Logout
-            </Link>
-          </nav>
-        </div>
+        <NavBar />
       </header>
       <main className="flex flex-col items-center justify-center flex-grow p-4">
         <div className="w-full max-w-2xl p-6 bg-white rounded-lg shadow-md dark:bg-gray-800">

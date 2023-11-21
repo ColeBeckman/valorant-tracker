@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 
 export function Component() {
   return (
-    (<div className="flex w-full max-w-sm items-center space-x-2">
+    (<div className="flex w-full max-w-sm items-center">
       <div className="grid grid-cols-2 gap-4 w-full">
         <div className="space-y-2">
           <Label htmlFor="player-name">Player Name</Label>
