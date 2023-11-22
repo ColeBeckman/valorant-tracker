@@ -5,7 +5,7 @@ import Link from "next/link";
 export const LinkButton = (props) => {
   const { href, className, children, disabled } = props;
   const linkStyle =
-    "";
+    "h-10 bg-gray-800 text-center flex items-center rounded-md justify-center border-gray-50 border-[1px] border-solid";
 
   return (
     <Link

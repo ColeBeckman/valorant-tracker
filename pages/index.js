@@ -18,11 +18,11 @@ export default function Component() {
 
   return (
     <div className="flex w-screen flex-col h-screen bg-valorant">
-      <header className="px-6 py-4 bg-white shadow-md dark:bg-gray-800">
+      <header className="px-6 bg-white shadow-md dark:bg-gray-800">
         <NavBar />
       </header>
       <div className="flex max-w-screen-lg mx-auto justify-center h-full gap-2 items-center flex-col">
-        <div className="flex bg-gray-800 flex-col ">
+        <div className="flex bg-gray-800 flex-col bg-opacity-90 p-6 rounded-3xl gap-3">
           <div className="grid grid-cols-2 gap-4 w-full">
             <div className="space-y-2">
               <Label htmlFor="player-name">Player Name</Label>
@@ -42,14 +42,13 @@ export default function Component() {
               />
             </div>
           </div>
-          <div className="w-full h-10 bg-gray-800 text-center flex items-center rounded-md justify-center">
-            <LinkButton
-              disabled={!playerName || !playerTag}
-              href={`/profile?name=${playerName}&tag=${playerTag}`}
-            >
-              Search
-            </LinkButton>
-          </div>
+
+          <LinkButton
+            disabled={!playerName || !playerTag}
+            href={`/profile?name=${playerName}&tag=${playerTag}`}
+          >
+            Search
+          </LinkButton>
         </div>
       </div>
     </div>
