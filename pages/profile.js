@@ -1,7 +1,9 @@
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
+import { NavBar } from "@/components/NavBar";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 export default function Profile() {
   const [isLoading, setIsLoading] = useState(true);
@@ -36,7 +38,6 @@ export default function Profile() {
     }
   }, [profileName, profileTag]);
 
-  if (!profileState) return null;
   const recentMatches = matchHistory.map((match) => {
     const myPlayer = match.players.all_players.find((player) => {
       const matchAccount = player.name === name && player.tag === tag;
@@ -47,81 +48,120 @@ export default function Profile() {
     const isWin = winningTeam === myPlayer.team;
     return { myPlayer, map, isWin };
   });
-  const seasonsArray = Object.values(by_season);
-  const latestSeason = seasonsArray[seasonsArray.length - 1];
+  const seasonsArray = profileState && Object.values(by_season);
+  const latestSeason = profileState && seasonsArray[seasonsArray.length - 1];
   return (
     <div className="flex flex-col min-h-screen bg-gray-100 dark:bg-gray-900">
-      <header className="px-6 py-4 bg-white shadow-md dark:bg-gray-800">
-        <div className="flex items-center justify-between">
-          <Link
-            className="text-2xl font-bold text-gray-800 dark:text-white"
-            href="#"
-          ></Link>
-          <nav className="space-x-4">
-            <Link className="text-gray-800 dark:text-white" href="/">
-              Home
-            </Link>
-            <Link className="text-gray-800 dark:text-white" href="#">
-              Logout
-            </Link>
-          </nav>
-        </div>
+      <header className="px-6 bg-white shadow-md dark:bg-gray-800">
+        <NavBar />
       </header>
       <main className="flex flex-col items-center justify-center flex-grow p-4">
         <div className="w-full max-w-2xl p-6 bg-white rounded-lg shadow-md dark:bg-gray-800">
-          <h2 className="text-xl font-bold text-gray-800 dark:text-white">
-            Peak Rank: {highest_rank.patched_tier}
-          </h2>
-          <div className="flex items-center space-x-4 mt-4">
-            <img
-              alt="Avatar"
-              className="rounded-full"
-              height="80"
-              src={card.small}
-              style={{
-                aspectRatio: "80/80",
-                objectFit: "cover",
-              }}
-              width="80"
+          {highest_rank?.patched_tier ? (
+            <h2 className="text-xl font-bold text-gray-800 dark:text-white">
+              Peak Rank: {highest_rank?.patched_tier}
+            </h2>
+          ) : (
+            <Skeleton
+              className="h-[28px]"
+              baseColor="#1a1f2c"
+              width={"225px"}
+              highlightColor="#171923"
             />
+          )}
+          <div className="flex items-center space-x-4 mt-4">
+            {card?.small ? (
+              <img
+                alt="Avatar"
+                className="rounded-full"
+                height="80"
+                src={card?.small}
+                style={{
+                  aspectRatio: "80/80",
+                  objectFit: "cover",
+                }}
+                width="80"
+              />
+            ) : (
+              <Skeleton
+                className="h-[80px]"
+                baseColor="#1a1f2c"
+                highlightColor="#171923"
+                width={"80px"}
+                circle
+              ></Skeleton>
+            )}
             <div>
-              <h3 className="text-lg font-bold text-gray-800 dark:text-white">
-                {name} #{tag}
-              </h3>
-              <span className="text-gray-500 dark:text-gray-400">
-                Level: {account_level}{" "}
-              </span>
-              <span className="text-gray-500 dark:text-gray-400">
-                {current_data.currenttierpatched}
-              </span>
+              {name && tag ? (
+                <>
+                  <h3 className="text-lg font-bold text-gray-800 dark:text-white">
+                    {name} #{tag}
+                  </h3>
+                  <span className="text-gray-500 dark:text-gray-400">
+                    Level: {account_level}{" "}
+                  </span>
+                  <span className="text-gray-500 dark:text-gray-400">
+                    {current_data?.currenttierpatched}
+                  </span>
+                </>
+              ) : (
+                <Skeleton
+                  className="h-[22px]"
+                  baseColor="#1a1f2c"
+                  width={"150px"}
+                  highlightColor="#171923"
+                  count={2}
+                />
+              )}
             </div>
           </div>
           <h3 className="mt-8 text-lg font-bold text-gray-800 dark:text-white">
             Stats
           </h3>
           <div className="grid grid-cols-2 gap-4 mt-4">
-            <div className="p-4 bg-blue-100 dark:bg-blue-700 rounded-lg">
-              <h4 className="text-lg font-bold text-blue-800 dark:text-blue-200">
-                Total Act Matches:
-              </h4>
-              <span className="text-gray-500 dark:text-gray-400">
-                {latestSeason.number_of_games}
-              </span>
-            </div>
-            <div className="p-4 bg-blue-100 dark:bg-blue-700 rounded-lg">
-              <h4 className="text-lg font-bold text-blue-800 dark:text-blue-200">
-                Total Act Wins
-              </h4>
-              <span className="text-gray-500 dark:text-gray-400">
-                {latestSeason.wins}
-              </span>
-            </div>
+            {latestSeason?.number_of_games ? (
+              <div className="p-4 bg-blue-100 dark:bg-blue-700 rounded-lg">
+                <h4 className="text-lg font-bold text-blue-800 dark:text-blue-200">
+                  Total Act Matches:
+                </h4>
+                <span className="text-gray-500 dark:text-gray-400">
+                  {latestSeason?.number_of_games}
+                </span>
+              </div>
+            ) : (
+              <Skeleton
+                className="h-[84px] py-4 rounded-lg space-y-4"
+                baseColor="#1a1f2c"
+                highlightColor="#171923"
+              ></Skeleton>
+            )}
+            {latestSeason?.wins ? (
+              <div className="p-4 bg-blue-100 dark:bg-blue-700 rounded-lg">
+                <h4 className="text-lg font-bold text-blue-800 dark:text-blue-200">
+                  Total Act Wins
+                </h4>
+                <span className="text-gray-500 dark:text-gray-400">
+                  {latestSeason?.wins}
+                </span>
+              </div>
+            ) : (
+              <Skeleton
+                className="h-[84px] py-4 rounded-lg space-y-4"
+                baseColor="#1a1f2c"
+                highlightColor="#171923"
+              ></Skeleton>
+            )}
           </div>
           <h3 className="mt-8 text-lg font-bold text-gray-800 dark:text-white">
             Recent Matches
           </h3>
           {isLoading ? (
-            <LoadingSpinner></LoadingSpinner>
+            <Skeleton
+              className="h-16 py-4 rounded-lg mt-4 space-y-4"
+              baseColor="#1a1f2c"
+              highlightColor="#171923"
+              count={5}
+            />
           ) : (
             <div className="mt-4 space-y-4">
               {recentMatches.map((match, i) => {
