@@ -1,17 +1,23 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { LoadingSpinner } from "@/components/LoadingSpinner";
 import { NavBar } from "@/components/NavBar";
-import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
 export default function Profile() {
   const [isLoading, setIsLoading] = useState(true);
-  const [profileState, setProfileState] = useState();
+  const [user, setUser] = useState({});
   const [matchHistory, setMatchHistory] = useState([]);
-  const { accountInfo, accountMMR } = profileState || {};
-  const { name, account_level, card, region, tag } = accountInfo || {};
-  const { by_season, current_data, images, highest_rank } = accountMMR || {};
+  const {
+    peak_rank,
+    profile_image,
+    name,
+    tag,
+    level,
+    rank,
+    total_act_matches,
+    total_act_wins,
+  } = user;
   const searchParams = useSearchParams();
   const profileName = searchParams.get("name");
   const profileTag = searchParams.get("tag");
@@ -22,7 +28,7 @@ export default function Profile() {
         `/api/search?name=${profileName}&tag=${profileTag}`
       );
       const jsonResult = await result.json();
-      setProfileState(jsonResult);
+      setUser(jsonResult);
     };
     const fetchMatchHistory = async () => {
       const result = await fetch(
@@ -40,7 +46,9 @@ export default function Profile() {
 
   const recentMatches = matchHistory.map((match) => {
     const myPlayer = match.players.all_players.find((player) => {
-      const matchAccount = player.name === name && player.tag === tag;
+      const matchAccount =
+        player.name.toLowerCase() === name.toLowerCase() &&
+        player.tag.toLowerCase() === tag.toLowerCase();
       return matchAccount;
     });
     const { map } = match.metadata;
@@ -48,8 +56,6 @@ export default function Profile() {
     const isWin = winningTeam === myPlayer.team;
     return { myPlayer, map, isWin };
   });
-  const seasonsArray = profileState && Object.values(by_season);
-  const latestSeason = profileState && seasonsArray[seasonsArray.length - 1];
   return (
     <div className="flex flex-col min-h-screen bg-gray-100 dark:bg-gray-900">
       <header className="px-6 bg-white shadow-md dark:bg-gray-800">
@@ -57,9 +63,9 @@ export default function Profile() {
       </header>
       <main className="flex flex-col items-center justify-center flex-grow p-4">
         <div className="w-full max-w-2xl p-6 bg-white rounded-lg shadow-md dark:bg-gray-800">
-          {highest_rank?.patched_tier ? (
+          {peak_rank ? (
             <h2 className="text-xl font-bold text-gray-800 dark:text-white">
-              Peak Rank: {highest_rank?.patched_tier}
+              Peak Rank: {peak_rank}
             </h2>
           ) : (
             <Skeleton
@@ -70,12 +76,12 @@ export default function Profile() {
             />
           )}
           <div className="flex items-center space-x-4 mt-4">
-            {card?.small ? (
+            {profile_image ? (
               <img
                 alt="Avatar"
                 className="rounded-full"
                 height="80"
-                src={card?.small}
+                src={profile_image}
                 style={{
                   aspectRatio: "80/80",
                   objectFit: "cover",
@@ -98,10 +104,10 @@ export default function Profile() {
                     {name} #{tag}
                   </h3>
                   <span className="text-gray-500 dark:text-gray-400">
-                    Level: {account_level}{" "}
+                    Level: {level}{" "}
                   </span>
                   <span className="text-gray-500 dark:text-gray-400">
-                    {current_data?.currenttierpatched}
+                    {rank}
                   </span>
                 </>
               ) : (
@@ -119,13 +125,13 @@ export default function Profile() {
             Stats
           </h3>
           <div className="grid grid-cols-2 gap-4 mt-4">
-            {latestSeason?.number_of_games ? (
+            {total_act_matches ? (
               <div className="p-4 bg-blue-100 dark:bg-blue-700 rounded-lg">
                 <h4 className="text-lg font-bold text-blue-800 dark:text-blue-200">
                   Total Act Matches:
                 </h4>
                 <span className="text-gray-500 dark:text-gray-400">
-                  {latestSeason?.number_of_games}
+                  {total_act_matches}
                 </span>
               </div>
             ) : (
@@ -135,13 +141,13 @@ export default function Profile() {
                 highlightColor="#171923"
               ></Skeleton>
             )}
-            {latestSeason?.wins ? (
+            {total_act_wins ? (
               <div className="p-4 bg-blue-100 dark:bg-blue-700 rounded-lg">
                 <h4 className="text-lg font-bold text-blue-800 dark:text-blue-200">
                   Total Act Wins
                 </h4>
                 <span className="text-gray-500 dark:text-gray-400">
-                  {latestSeason?.wins}
+                  {total_act_wins}
                 </span>
               </div>
             ) : (
