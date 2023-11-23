@@ -7,7 +7,7 @@ exports.up = function (knex) {
     table.integer("user_id").unsigned().references("id").inTable("users");
     table.increments();
     table.string("map");
-    table.string("outcome");
+    table.boolean("is_win");
     table.string("kda");
     table.string("score");
     table.timestamps();

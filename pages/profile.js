@@ -18,18 +18,12 @@ export default function Profile() {
     total_act_matches,
     total_act_wins,
   } = user;
+
   const searchParams = useSearchParams();
   const profileName = searchParams.get("name");
   const profileTag = searchParams.get("tag");
 
   useEffect(() => {
-    const fetchProfile = async () => {
-      const result = await fetch(
-        `/api/search?name=${profileName}&tag=${profileTag}`
-      );
-      const jsonResult = await result.json();
-      setUser(jsonResult);
-    };
     const fetchMatchHistory = async () => {
       const result = await fetch(
         `/api/matches?name=${profileName}&tag=${profileTag}`
@@ -38,24 +32,20 @@ export default function Profile() {
       setMatchHistory(jsonResult);
       setIsLoading(false);
     };
+    const fetchProfile = async () => {
+      const result = await fetch(
+        `/api/search?name=${profileName}&tag=${profileTag}`
+        );
+        const jsonResult = await result.json();
+        setUser(jsonResult);
+        fetchMatchHistory();
+    };
+
     if (profileName && profileTag) {
       fetchProfile();
-      fetchMatchHistory();
     }
   }, [profileName, profileTag]);
 
-  const recentMatches = matchHistory.map((match) => {
-    const myPlayer = match.players.all_players.find((player) => {
-      const matchAccount =
-        player.name.toLowerCase() === name.toLowerCase() &&
-        player.tag.toLowerCase() === tag.toLowerCase();
-      return matchAccount;
-    });
-    const { map } = match.metadata;
-    const winningTeam = match.teams.blue.has_won ? "Blue" : "Red";
-    const isWin = winningTeam === myPlayer.team;
-    return { myPlayer, map, isWin };
-  });
   return (
     <div className="flex flex-col min-h-screen bg-gray-100 dark:bg-gray-900">
       <header className="px-6 bg-white shadow-md dark:bg-gray-800">
@@ -170,13 +160,9 @@ export default function Profile() {
             />
           ) : (
             <div className="mt-4 space-y-4">
-              {recentMatches.map((match, i) => {
-                const { assists, deaths, kills, score } = match.myPlayer.stats;
-                const KDA = `${kills}/${deaths}/${assists}`;
-                const outcomeText = match.isWin ? "Win" : "Loss";
-                const outcomeColour = match.isWin ? "#228b22" : "#800000";
-                console.log(outcomeText);
-                console.log(outcomeColour);
+              {matchHistory.map(({ is_win, map, kda, score }, i) => {
+                const outcomeText = is_win ? "Win" : "Loss";
+                const outcomeColour = is_win ? "#228b22" : "#800000";
                 return (
                   <div
                     key={i}
@@ -185,7 +171,7 @@ export default function Profile() {
                   >
                     <div>
                       <span className="block text-white-800 dark:text-white-200">
-                        Map: {match.map}
+                        Map: {map}
                       </span>
                       <span className="text-sm text-white-500 dark:text-white-400">
                         Outcome: {outcomeText}
@@ -193,7 +179,7 @@ export default function Profile() {
                     </div>
                     <div>
                       <span className="block text-white-800 dark:text-white-200">
-                        KDA: {KDA}
+                        KDA: {kda}
                       </span>
                       <span className="text-sm text-white-500 dark:text-white-400">
                         Score: {score}
