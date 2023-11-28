@@ -21,6 +21,10 @@ export default async function handler(req, res) {
     name: name,
     tag: tag,
   });
+  if (!accountInfo) {
+    res.status(404).end();
+    return;
+  }
   const region = accountInfo.region;
 
   const { data: accountMMR } = await VAPI.getMMR({
