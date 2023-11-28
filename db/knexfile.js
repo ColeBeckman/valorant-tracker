@@ -1,7 +1,6 @@
 const Knex = require("knex");
-const envpath =
-  process.env.NODE_ENV === "development" ? ".env.local" : ".env.production";
-require("dotenv").config({ path: `../${envpath}` });
+
+require("dotenv").config();
 
 module.exports = {
   development: {
