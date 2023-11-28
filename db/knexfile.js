@@ -1,12 +1,16 @@
 const Knex = require("knex");
 
+require("dotenv").config();
+
 module.exports = {
   development: {
     client: "postgresql",
     connection: {
-      database: "valorant-tracker-db",
-      user: "postgres",
-      password: "password",
+      ssl: true,
+      database: process.env.POSTGRES_DATABASE,
+      user: process.env.POSTGRES_USER,
+      host: process.env.POSTGRES_HOST,
+      password: process.env.POSTGRES_PASSWORD,
     },
     pool: {
       min: 2,
