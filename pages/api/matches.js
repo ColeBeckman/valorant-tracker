@@ -50,7 +50,9 @@ export default async function handler(req, res) {
       score: score,
     };
   });
-
-  await knex("matches").insert(recentMatches);
-  res.json(recentMatches);
+  if (recentMatches.length) {
+    await knex("matches").insert(recentMatches);
+    return res.json(recentMatches);
+  }
+  res.json([]);
 }

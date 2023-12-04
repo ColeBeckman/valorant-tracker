@@ -38,9 +38,13 @@ export default async function handler(req, res) {
   const { by_season, current_data, images, highest_rank } = accountMMR;
   const seasonsArray = Object.values(by_season);
   const latestSeason = seasonsArray[seasonsArray.length - 1];
+  const defaultProfilePicture = card?.small
+    ? card.small
+    : "/images/default-avatar.png";
+
   const newUserObject = {
     peak_rank: highest_rank?.patched_tier,
-    profile_image: card?.small,
+    profile_image: defaultProfilePicture,
     name: name.toLowerCase(),
     tag: tag.toLowerCase(),
     level: account_level,
