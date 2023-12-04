@@ -4,6 +4,7 @@ import { NavBar } from "@/components/NavBar";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { LinkButton } from "@/components/LinkButton";
+import capitalizeFirstLetter from "../components/util/capitalizeFirstLetter";
 
 export default function Profile() {
   const [isLoading, setIsLoading] = useState(true);
@@ -39,11 +40,16 @@ export default function Profile() {
         const result = await fetch(
           `/api/search?name=${profileName}&tag=${profileTag}`
         );
+        console.log(result);
+        if (!result.ok) {
+          return;
+        }
         const jsonResult = await result.json();
         setUser(jsonResult);
         fetchMatchHistory();
       } catch {
         setAccountNotFound(true);
+        console.log("=============");
       }
     };
 
@@ -58,7 +64,7 @@ export default function Profile() {
         <NavBar />
       </header>
       <main className="flex flex-col items-center justify-center flex-grow p-4">
-        {!accountNotFound === true ? (
+        {accountNotFound === true ? (
           <div className="flex flex-col text-xl">
             Account Not Found{" "}
             <LinkButton className="mt-2" href="/">
@@ -106,7 +112,7 @@ export default function Profile() {
                   {name && tag ? (
                     <>
                       <h3 className="text-lg font-bold text-gray-800 dark:text-white">
-                        {name} #{tag}
+                        {capitalizeFirstLetter(name)} #{tag}
                       </h3>
                       <span className="text-gray-500 dark:text-gray-400">
                         Level: {level}{" "}
@@ -130,13 +136,13 @@ export default function Profile() {
                 Stats
               </h3>
               <div className="grid grid-cols-2 gap-4 mt-4">
-                {total_act_matches ? (
+                {Object.keys(user).length ? (
                   <div className="p-4 bg-blue-100 dark:bg-blue-700 rounded-lg">
                     <h4 className="text-lg font-bold text-blue-800 dark:text-blue-200">
-                      Total Act Matches:
+                      Total Act Matches
                     </h4>
                     <span className="text-gray-500 dark:text-gray-400">
-                      {total_act_matches}
+                      {total_act_matches || "--"}
                     </span>
                   </div>
                 ) : (
@@ -146,13 +152,13 @@ export default function Profile() {
                     highlightColor="#171923"
                   ></Skeleton>
                 )}
-                {total_act_wins ? (
+                {Object.keys(user).length ? (
                   <div className="p-4 bg-blue-100 dark:bg-blue-700 rounded-lg">
                     <h4 className="text-lg font-bold text-blue-800 dark:text-blue-200">
                       Total Act Wins
                     </h4>
                     <span className="text-gray-500 dark:text-gray-400">
-                      {total_act_wins}
+                      {total_act_wins || "--"}
                     </span>
                   </div>
                 ) : (
@@ -175,6 +181,7 @@ export default function Profile() {
                 />
               ) : (
                 <div className="mt-4 space-y-4">
+                  {!matchHistory.length && "No recent matches found"}
                   {matchHistory.map(({ is_win, map, kda, score }, i) => {
                     const outcomeText = is_win ? "Win" : "Loss";
                     const outcomeColour = is_win ? "#228b22" : "#800000";
