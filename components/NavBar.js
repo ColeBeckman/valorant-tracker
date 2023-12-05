@@ -1,6 +1,5 @@
 import React from "react";
 import Link from "next/link";
-import { UserButton, SignedOut, SignInButton, SignedIn } from "@clerk/nextjs";
 import { useRouter } from "next/router";
 
 export const NavBar = () => {
@@ -11,12 +10,6 @@ export const NavBar = () => {
       <Link className="text-gray-800 dark:text-white" href="/">
         Home
       </Link>
-      <SignedIn>
-        <UserButton afterSignOutUrl={router.asPath} />
-      </SignedIn>
-      <SignedOut>
-        <SignInButton mode="modal" afterSignInUrl={router.asPath} />
-      </SignedOut>
     </nav>
   );
 };

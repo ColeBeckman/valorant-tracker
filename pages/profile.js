@@ -32,6 +32,7 @@ export default function Profile() {
         `/api/matches?name=${profileName}&tag=${profileTag}`
       );
       const jsonResult = await result.json();
+      console.log(jsonResult);
       setMatchHistory(jsonResult);
       setIsLoading(false);
     };
@@ -45,6 +46,7 @@ export default function Profile() {
         return;
       }
       const jsonResult = await result.json();
+      console.log(jsonResult);
       setUser(jsonResult);
       fetchMatchHistory();
     };
@@ -71,7 +73,10 @@ export default function Profile() {
           <div className="w-full max-w-2xl p-6 bg-white rounded-lg shadow-md dark:bg-gray-800">
             <div>
               {peak_rank ? (
-                <h2 className="text-xl font-bold text-gray-800 dark:text-white">
+                <h2
+                  data-test-id="peak-rank"
+                  className="text-xl font-bold text-gray-800 dark:text-white"
+                >
                   Peak Rank: {peak_rank}
                 </h2>
               ) : (
@@ -85,6 +90,7 @@ export default function Profile() {
               <div className="flex items-center space-x-4 mt-4">
                 {profile_image ? (
                   <img
+                    data-test-id="profile-image"
                     alt="Avatar"
                     className="rounded-full"
                     height="80"
@@ -107,10 +113,16 @@ export default function Profile() {
                 <div>
                   {name && tag ? (
                     <>
-                      <h3 className="text-lg font-bold text-gray-800 dark:text-white">
+                      <h3
+                        data-test-id="profile-name"
+                        className="text-lg font-bold text-gray-800 dark:text-white"
+                      >
                         {capitalizeFirstLetter(name)} #{tag}
                       </h3>
-                      <span className="text-gray-500 dark:text-gray-400">
+                      <span
+                        data-test-id="profile-level"
+                        className="text-gray-500 dark:text-gray-400"
+                      >
                         Level: {level}{" "}
                       </span>
                       <span className="text-gray-500 dark:text-gray-400">
