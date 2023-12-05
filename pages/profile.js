@@ -36,21 +36,17 @@ export default function Profile() {
       setIsLoading(false);
     };
     const fetchProfile = async () => {
-      try {
-        const result = await fetch(
-          `/api/search?name=${profileName}&tag=${profileTag}`
-        );
-        console.log(result);
-        if (!result.ok) {
-          return;
-        }
-        const jsonResult = await result.json();
-        setUser(jsonResult);
-        fetchMatchHistory();
-      } catch {
+      const result = await fetch(
+        `/api/search?name=${profileName}&tag=${profileTag}`
+      );
+      console.log(result);
+      if (!result.ok) {
         setAccountNotFound(true);
-        console.log("=============");
+        return;
       }
+      const jsonResult = await result.json();
+      setUser(jsonResult);
+      fetchMatchHistory();
     };
 
     if (profileName && profileTag) {
@@ -118,7 +114,7 @@ export default function Profile() {
                         Level: {level}{" "}
                       </span>
                       <span className="text-gray-500 dark:text-gray-400">
-                        {rank}
+                        {rank ? rank : "Unrated"}
                       </span>
                     </>
                   ) : (
@@ -139,7 +135,7 @@ export default function Profile() {
                 {Object.keys(user).length ? (
                   <div className="p-4 bg-blue-100 dark:bg-blue-700 rounded-lg">
                     <h4 className="text-lg font-bold text-blue-800 dark:text-blue-200">
-                      Total Act Matches
+                      Recent Episode Matches
                     </h4>
                     <span className="text-gray-500 dark:text-gray-400">
                       {total_act_matches || "--"}
@@ -155,7 +151,7 @@ export default function Profile() {
                 {Object.keys(user).length ? (
                   <div className="p-4 bg-blue-100 dark:bg-blue-700 rounded-lg">
                     <h4 className="text-lg font-bold text-blue-800 dark:text-blue-200">
-                      Total Act Wins
+                      Recent Episode Wins
                     </h4>
                     <span className="text-gray-500 dark:text-gray-400">
                       {total_act_wins || "--"}
@@ -170,7 +166,7 @@ export default function Profile() {
                 )}
               </div>
               <h3 className="mt-8 text-lg font-bold text-gray-800 dark:text-white">
-                Recent Matches
+                Act Match History
               </h3>
               {isLoading ? (
                 <Skeleton

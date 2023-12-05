@@ -35,9 +35,10 @@ export default async function handler(req, res) {
   });
 
   const { account_level, card } = accountInfo;
-  const { by_season, current_data, images, highest_rank } = accountMMR;
+  const { by_season, highest_rank } = accountMMR;
   const seasonsArray = Object.values(by_season);
   const latestSeason = seasonsArray[seasonsArray.length - 1];
+  const currentRank = latestSeason.final_rank_patched;
   const defaultProfilePicture = card?.small
     ? card.small
     : "/images/default-avatar.png";
@@ -48,7 +49,7 @@ export default async function handler(req, res) {
     name: name.toLowerCase(),
     tag: tag.toLowerCase(),
     level: account_level,
-    rank: current_data?.currenttierpatched,
+    rank: currentRank,
     region: region,
     version: "v2",
     total_act_matches: latestSeason?.number_of_games,
