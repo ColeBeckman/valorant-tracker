@@ -46,6 +46,7 @@ export default function Component() {
           <LinkButton
             disabled={!playerName || !playerTag}
             href={`/profile?name=${playerName}&tag=${playerTag}`}
+            testId="search-link"
           >
             Search
           </LinkButton>
